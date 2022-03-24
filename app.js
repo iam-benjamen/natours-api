@@ -21,9 +21,10 @@ app.use((req, res, next) => {
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/tours', tourRouter);
 
+//handle any request without a response
 app.use((err, req, res, next) => {
-  console.error(err.stack)
-  res.status(500).send('Something broke!')
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
 });
 
 module.exports = app;
