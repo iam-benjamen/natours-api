@@ -78,7 +78,13 @@ const tourSchema = new mongoose.Schema(
     },
   },
   {
-    toJSON: { virtuals: true },
+    toJSON: { 
+      virtuals: true, 
+      transform: (_doc, ret) => {
+        delete ret.id;
+        delete ret.__v;
+      },
+    },
   }
 );
 

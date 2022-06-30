@@ -30,6 +30,7 @@ const server = app.listen(port, () => {
   console.log(`App running on port ${port}...`);
 });
 
+//Any other failed async promises in the app
 process.on('unhandledRejection', err =>{
   console.log(err.name, err.message);
   console.log('UNHANDLED REJECTION, SHUTTING DOWN APP');
