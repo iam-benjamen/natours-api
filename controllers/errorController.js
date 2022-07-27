@@ -1,22 +1,22 @@
-const appError = require("../utils/appError")
+const appError = require("../utils/appError");
 
-const handleCastErrorDB = err => {
-  const message = `Invalid ${err.path}: ${err.value}`
-  return new appError(message, 400)
-}
+const handleCastErrorDB = (err) => {
+  const message = `Invalid ${err.path}: ${err.value}`;
+  return new appError(message, 400);
+};
 
-const handleDuplicateFields = err =>{
+const handleDuplicateFields = (err) => {
   const value = err.errmsg.match(/(["'])(\\?.)*?\1/);
   const message = `Duplicate field value: ${value}. Please use another value!`;
 
-  return new appError(message, 400)
-}
-
-const handleValidationErrorDB = err => {
-  const errors = Object.values(err.errors).map(el => el.message);
-  const message = `Invalid input data. ${errors.join('. ')}`;
   return new appError(message, 400);
-}
+};
+
+const handleValidationErrorDB = (err) => {
+  const errors = Object.values(err.errors).map((el) => el.message);
+  const message = `Invalid input data. ${errors.join(". ")}`;
+  return new appError(message, 400);
+};
 
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
@@ -51,13 +51,13 @@ module.exports = (err, req, res, next) => {
   if (process.env.NODE_ENV === "development") {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === "production") {
-
     //we don't want to mutate our parameter with the handlecastErrorDB function, so we create a copy
     let error = { ...err };
 
     if (error.name === "CastError") error = handleCastErrorDB(error);
-    if(error.code === 11000) error = handleDuplicateFields(error);
-    if(error.name === "ValidationError") error = handleValidationErrorDB(error);
+    if (error.code === 11000) error = handleDuplicateFields(error);
+    if (error.name === "ValidationError")
+      error = handleValidationErrorDB(error);
 
     sendErrorProd(error, res);
   }
